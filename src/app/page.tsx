@@ -8,10 +8,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { Restaurant, RestaurantFilters } from "@/types/domain";
 
 export default function HomePage() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [filters, setFilters] = useState<RestaurantFilters>({});
-  const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState<{
+    filters: RestaurantFilters;
+    restaurants: Restaurant[];
+  } | null>(null);
 
   useEffect(() => {
     getCuisineTypes().then(setCuisines);
@@ -19,17 +21,18 @@ export default function HomePage() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     getRestaurants(filters).then((data) => {
       if (!cancelled) {
-        setRestaurants(data);
-        setLoading(false);
+        setResult({ filters, restaurants: data });
       }
     });
     return () => {
       cancelled = true;
     };
   }, [filters]);
+
+  const loading = result === null || result.filters !== filters;
+  const restaurants = loading ? [] : result.restaurants;
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
