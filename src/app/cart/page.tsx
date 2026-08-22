@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Minus, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { submitOrder } from "@/lib/api-client";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { formatPrice } from "@/lib/format";
@@ -48,9 +48,9 @@ export default function CartPage() {
           Ожидаемое время доставки: ~{confirmation.estimatedDeliveryMin} мин. Сумма:{" "}
           {formatPrice(confirmation.total)}. Оплата не выполнялась — это демо-заказ.
         </p>
-        <Button render={<Link href="/" />} className="mt-2">
+        <Link href="/" className={buttonVariants({ className: "mt-2" })}>
           Вернуться к ресторанам
-        </Button>
+        </Link>
       </div>
     );
   }
@@ -59,7 +59,7 @@ export default function CartPage() {
     return (
       <div className="mx-auto flex max-w-lg flex-col items-center gap-3 px-4 py-16 text-center">
         <p className="text-sm text-muted-foreground">Ваша корзина пуста.</p>
-        <Button render={<Link href="/" />}>Выбрать ресторан</Button>
+        <Link href="/" className={buttonVariants()}>Выбрать ресторан</Link>
       </div>
     );
   }

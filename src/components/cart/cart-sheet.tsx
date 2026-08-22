@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { useCartStore } from "@/store/cart-store";
-import { Button } from "@/components/ui/button";
+import { useCartHasHydrated, useCartStore } from "@/store/cart-store";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -20,6 +20,7 @@ export function CartSheet() {
   const removeItem = useCartStore((s) => s.removeItem);
   const totalItems = useCartStore((s) => s.totalItems());
   const totalPrice = useCartStore((s) => s.totalPrice());
+  const hasHydrated = useCartHasHydrated();
 
   return (
     <Sheet>
@@ -28,7 +29,7 @@ export function CartSheet() {
           <Button variant="outline" size="sm">
             <ShoppingBag data-icon="inline-start" />
             Корзина
-            {totalItems > 0 && (
+            {hasHydrated && totalItems > 0 && (
               <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
                 {totalItems}
               </span>
@@ -95,9 +96,9 @@ export function CartSheet() {
               <span>Итого</span>
               <span>{formatPrice(totalPrice)}</span>
             </div>
-            <Button render={<Link href="/cart" />} className="w-full">
+            <Link href="/cart" className={buttonVariants({ className: "w-full" })}>
               Оформить заказ
-            </Button>
+            </Link>
           </SheetFooter>
         )}
       </SheetContent>

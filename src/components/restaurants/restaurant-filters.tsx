@@ -74,7 +74,8 @@ export function RestaurantFiltersBar({ cuisines, filters, onChange }: Props) {
 
         <div className="ml-auto flex items-center gap-2">
           <Select
-            value={filters.priceLevel ? String(filters.priceLevel) : undefined}
+            items={PRICE_OPTIONS}
+            value={filters.priceLevel ? String(filters.priceLevel) : null}
             onValueChange={(value) =>
               onChange({ ...filters, priceLevel: value ? Number(value) : undefined })
             }
@@ -92,9 +93,10 @@ export function RestaurantFiltersBar({ cuisines, filters, onChange }: Props) {
           </Select>
 
           <Select
-            value={filters.sort}
+            items={SORT_OPTIONS}
+            value={filters.sort ?? null}
             onValueChange={(value) =>
-              onChange({ ...filters, sort: value as RestaurantFilters["sort"] })
+              onChange({ ...filters, sort: (value ?? undefined) as RestaurantFilters["sort"] })
             }
           >
             <SelectTrigger className="w-44" size="sm">

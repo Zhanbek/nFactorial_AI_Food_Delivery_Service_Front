@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem, MenuItem } from "@/types/domain";
@@ -93,3 +94,20 @@ export const useCartStore = create<CartState>()(
     { name: "food-delivery-cart" },
   ),
 );
+
+/**
+ * The persisted cart only rehydrates from localStorage on the client, so the
+ * first client render must report `false` (matching SSR) even though the
+ * store may already hold real data by then — otherwise React flags a
+ * hydration mismatch on anything derived from cart contents (e.g. the cart
+ * count badge).
+ */
+export function useCartHasHydrated() {
+  return useSyncExternalStore(
+    // `persist` is only attached in the browser; on the server there is
+    // nothing to subscribe to, so report no-op (server snapshot covers it).
+    (callback) => useCartStore.persist?.onFinishHydration(callback) ?? (() => {}),
+    () => useCartStore.persist?.hasHydrated() ?? false,
+    () => false,
+  );
+}
